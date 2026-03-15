@@ -24,6 +24,27 @@ const ORDERS = [
 export default function App() {
   const [orders, setOrders] = React.useState(ORDERS);
 
+  const getTotal = () => {
+    let result = 0;
+    orders.forEach((order) => {
+      result += order.quantity * order.price;
+    });
+
+    return result;
+  };
+
+  const handeQuantityChanged = (product, newQuantity) => {
+    setOrders(
+      orders.map((order) => {
+        if (order.product === product) {
+          return { ...order, quantity: newQuantity };
+        }
+        
+        
+      })
+    );
+  };
+
   return (
     <>
       <header>
@@ -31,10 +52,18 @@ export default function App() {
       </header>
 
       <div className="order-list">
-        <OrderCard></OrderCard>
+        {orders.map((order, index) => (
+          <OrderCard
+            key={index}
+            product={order.product}
+            productPrice={order.price}
+            quantity={order.quantity}
+            onQuantityChanged={handeQuantityChanged}
+          />
+        ))}
       </div>
 
-      <CheckoutButton total="TODO"></CheckoutButton>
+      <CheckoutButton total={getTotal()}></CheckoutButton>
     </>
   );
 }
